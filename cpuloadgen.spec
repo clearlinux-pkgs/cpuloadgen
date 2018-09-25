@@ -4,12 +4,13 @@
 #
 Name     : cpuloadgen
 Version  : 0.94
-Release  : 1
+Release  : 3
 URL      : https://github.com/ptitiano/cpuloadgen/archive/v0.94.tar.gz
 Source0  : https://github.com/ptitiano/cpuloadgen/archive/v0.94.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : BSD-3-Clause
+Requires: cpuloadgen-bin
 Requires: cpuloadgen-license
 BuildRequires : glibc-staticdev
 
@@ -20,6 +21,15 @@ BuildRequires : glibc-staticdev
 #                                                                             #
 #         A Programmable CPU Load Generator, based on Dhrystone loops         #
 ###############################################################################
+
+%package bin
+Summary: bin components for the cpuloadgen package.
+Group: Binaries
+Requires: cpuloadgen-license = %{version}-%{release}
+
+%description bin
+bin components for the cpuloadgen package.
+
 
 %package license
 Summary: license components for the cpuloadgen package.
@@ -37,19 +47,26 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1537892342
+export SOURCE_DATE_EPOCH=1537892987
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1537892342
+export SOURCE_DATE_EPOCH=1537892987
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/doc/cpuloadgen
 cp LICENSE %{buildroot}/usr/share/doc/cpuloadgen/LICENSE
 %make_install
+## install_append content
+mkdir -p %{buildroot}/usr/bin
+mv %{buildroot}/cpuloadgen %{buildroot}/usr/bin/cpuloadgen
+## install_append end
 
 %files
 %defattr(-,root,root,-)
-/cpuloadgen
+
+%files bin
+%defattr(-,root,root,-)
+/usr/bin/cpuloadgen
 
 %files license
 %defattr(-,root,root,-)
