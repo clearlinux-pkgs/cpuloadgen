@@ -4,14 +4,14 @@
 #
 Name     : cpuloadgen
 Version  : 0.94
-Release  : 4
+Release  : 5
 URL      : https://github.com/ptitiano/cpuloadgen/archive/v0.94.tar.gz
 Source0  : https://github.com/ptitiano/cpuloadgen/archive/v0.94.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : BSD-3-Clause
-Requires: cpuloadgen-bin
-Requires: cpuloadgen-license
+Requires: cpuloadgen-bin = %{version}-%{release}
+Requires: cpuloadgen-license = %{version}-%{release}
 BuildRequires : glibc-staticdev
 
 %description
@@ -41,20 +41,30 @@ license components for the cpuloadgen package.
 
 %prep
 %setup -q -n cpuloadgen-0.94
+cd %{_builddir}/cpuloadgen-0.94
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1537892987
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1585184422
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 make  %{?_smp_mflags}
 
+
 %install
-export SOURCE_DATE_EPOCH=1537892987
+export SOURCE_DATE_EPOCH=1585184422
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/cpuloadgen
-cp LICENSE %{buildroot}/usr/share/doc/cpuloadgen/LICENSE
+mkdir -p %{buildroot}/usr/share/package-licenses/cpuloadgen
+cp %{_builddir}/cpuloadgen-0.94/LICENSE %{buildroot}/usr/share/package-licenses/cpuloadgen/c8156865ec05b78b917c28fcb520e8c674584887
 %make_install
 ## install_append content
 mkdir -p %{buildroot}/usr/bin
@@ -69,5 +79,5 @@ mv %{buildroot}/cpuloadgen %{buildroot}/usr/bin/cpuloadgen
 /usr/bin/cpuloadgen
 
 %files license
-%defattr(-,root,root,-)
-/usr/share/doc/cpuloadgen/LICENSE
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/cpuloadgen/c8156865ec05b78b917c28fcb520e8c674584887
